@@ -1,0 +1,48 @@
+package fr.nekiox.challenges.Rewards;
+
+import fr.nekiox.mineral.Core.MCPlayer;
+import fr.nekiox.mineral.mineralcontest;
+import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
+
+public abstract class AbstractReward {
+
+    private Player joueur;
+
+    private MCPlayer mcPlayer;
+
+
+    /**
+     * Méthode permettant de donner une récompense à un joueur
+     */
+    protected abstract void giveToPlayer();
+
+
+    /**
+     * Méthode permettant de récuperer le texte à afficher à un joueur quand il reçoit sa récompense
+     * @return
+     */
+    public abstract String getRewardText();
+
+    public Player getJoueur() {
+        return joueur;
+    }
+
+    public void setJoueur(Player joueur) {
+        this.joueur = joueur;
+        this.mcPlayer = mineralcontest.plugin.getMCPlayer(joueur);
+    }
+
+    public MCPlayer getMcPlayer() {
+        return mcPlayer;
+    }
+
+    /**
+     * Méthode permettant de donner la récompense à un joueur
+     */
+    public void rewardPlayer() {
+        // On informe le joueur qu'il a reçu une récompense
+        getJoueur().sendMessage(mineralcontest.prefixPrive + ChatColor.GREEN + getRewardText());
+        giveToPlayer();
+    }
+}
