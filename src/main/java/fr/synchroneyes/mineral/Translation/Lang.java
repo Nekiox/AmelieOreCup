@@ -7,6 +7,7 @@ import fr.synchroneyes.mineral.Utils.Log.GameLogger;
 import fr.synchroneyes.mineral.Utils.Log.Log;
 import fr.synchroneyes.mineral.Utils.TimeConverter;
 import fr.synchroneyes.mineral.mineralcontest;
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -19,7 +20,7 @@ import java.util.logging.Level;
 
 public enum Lang {
 
-    title("title", "%white%[%gold%Mineral%blue%Contest%white%]"),
+    title("title", "%white%[%gold%Amelie%blue%OreCup%white%]"),
     cvar_diamond_score("cvar_diamond_score", "Le score du diamand est maintenant de"),
     cvar_iron_score("cvar_iron_score", "Le score du fer est maintenant de "),
     cvar_emerald_score("cvar_emerald_score", "Le score de l'émeraude est maintenant de "),
@@ -142,7 +143,7 @@ public enum Lang {
     vote_is_in_progress_cant_start_game("vote_is_in_progress_cant_start_game", "Un vote est en cours, il n'est pas possible de démarrer la partie"),
     map_has_been_restored("map_has_been_restored", "La map a été remise à zéro"),
     admin_how_to_enable_vote("admin_how_to_enable_vote", "Pour forcer le démarrage du vote, faites /mp_start_vote"),
-    metrics_are_now_enabled("metrics_are_now_enabled", "Les données de votre partie mineral contest sont désormais envoyé à l'auteur du plugin, merci à vous !"),
+    metrics_are_now_enabled("metrics_are_now_enabled", "Les données de votre partie Amelie OreCup sont désormais envoyé à l'auteur du plugin, merci à vous !"),
     metrics_are_now_disabled("metrics_are_now_disabled", "L'envoie de donnée est désormais désactivé"),
     ready_tag("ready_tag", "[PRET]"),
     not_ready_tag("not_ready_tag", "[NON PRET]"),
@@ -377,8 +378,8 @@ public enum Lang {
     hud_timeleft_value("hud_timeleft_value", "%timeLeft%"),
     hud_team_text("hud_team_text", "Equipe:"),
     hud_score_text("hud_score_text", "Score:"),
-    hud_title_text1("hud_title_text1", "Mineral"),
-    hud_title_text2("hud_title_text2", "Contest"),
+    hud_title_text1("hud_title_text1", "Amelie"),
+    hud_title_text2("hud_title_text2", "OreCup"),
 
     stats_mostpoints_title("stats_mostpoints_title", "Meilleur joueur"),
     stats_mostpoints_subtitle("stats_mostpoints_subtitle", "Avec %d points rapporté"),
@@ -423,15 +424,18 @@ public enum Lang {
     death_inventory_player_title("death_inventory_player_title", "Inventaire de %coloredPlayerName%");
 
 
-
-
-
-
-    private String path;
-    private String def;
+    /**
+     * -- GETTER --
+     *  Get the path to the string.
+     *
+     * @return The path to the string.
+     */
+    @Getter
+    private final String path;
+    private final String def;
     private static YamlConfiguration LANG = new YamlConfiguration();
 
-    public static String langDataFolderName = "language";
+    public static final String langDataFolderName = "language";
 
 
     /**
@@ -445,28 +449,12 @@ public enum Lang {
 
     }
 
-    public static void copyLangFilesFromRessources() {
-        mineralcontest plugin = mineralcontest.plugin;
-        String LangFileName;
-        // For each language, we copy the langfile
-        for (Language langage : Language.values()) {
-            LangFileName = langage.getLanguageName() + ".yml";
-            File langFile = new File(plugin.getDataFolder() + File.separator + Lang.langDataFolderName, LangFileName);
-
-            if (!langFile.exists()) {
-                plugin.saveResource(langDataFolderName + File.separator + LangFileName, false);
-                Bukkit.getLogger().info("Created " + LangFileName + " file");
-                GameLogger.addLog(new Log("copyLangFileFromRessources", LangFileName + " created", "plugin_startup"));
-
-            }
-        }
-    }
 
     public static void loadLang(String lang) {
         mineralcontest plugin = mineralcontest.plugin;
         File langFile;
 
-        Bukkit.getLogger().info("[MINERALC] Loading " + lang + " language");
+        Bukkit.getLogger().info("[AmelieOreCup] Loading " + lang + " language");
 
         langFile = new File(plugin.getDataFolder() + File.separator + Lang.langDataFolderName, lang + ".yml");
         if (!langFile.exists()) {
@@ -487,7 +475,7 @@ public enum Lang {
 
         try {
             conf.save(langFile);
-            Bukkit.getLogger().info("[MINERALC] Loaded " + lang + " language");
+            Bukkit.getLogger().info("[AmelieOreCup] Loaded " + lang + " language");
             GameLogger.addLog(new Log("loadLang", lang + " loaded", "plugin_lang_loaded"));
             mineralcontest.prefix = Lang.title.toString() + ChatColor.WHITE;
             mineralcontest.prefixErreur = Lang.title.toString() + ChatColor.RED + Lang.error.toString() + ChatColor.WHITE + " ";
@@ -500,7 +488,7 @@ public enum Lang {
 
 
         } catch (IOException ioe) {
-            plugin.getLogger().log(Level.WARNING, "MineralContest: Failed to save lang.yml.");
+            plugin.getLogger().log(Level.WARNING, "AmelieOreCup: Failed to save lang.yml.");
             ioe.printStackTrace();
             GameLogger.addLog(new Log("error", "failed to save lang.yml", "plugin_error"));
 
@@ -556,15 +544,6 @@ public enum Lang {
     public String getDefault() {
         return this.def;
     }
-
-    /**
-     * Get the path to the string.
-     * @return The path to the string.
-     */
-    public String getPath() {
-        return this.path;
-    }
-
 
 
     public static String translate(String string, Equipe team, Player p) {
