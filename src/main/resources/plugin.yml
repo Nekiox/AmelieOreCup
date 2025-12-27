@@ -1,12 +1,11 @@
-name: MineralContest
+name: AmelieOreCup
 version: ${project.version}
 main: fr.nekiox.mineral.mineralcontest
 api-version: 1.13
-prefix: MINERALC
+prefix: AmelieOreCup
 load: STARTUP
-authors: [Groupe6]
-description: Plugin gamemode Mineral Contest
-website: http://mineral.synchroneyes.fr
+authors: Nekiox
+description: Plugin gamemode Amelie Ore Cup
 commands:
   start:
     description: Démarre une partie

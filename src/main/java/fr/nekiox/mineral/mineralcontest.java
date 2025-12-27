@@ -63,7 +63,7 @@ public final class mineralcontest extends JavaPlugin {
      */
     public static boolean communityVersion = false;
 
-    public static String prefix = "[MineralContest]";
+    public static String prefix = "[AmelieOreCup]";
     public static String prefixErreur;
     public static String prefixGlobal;
     public static String prefixPrive;
@@ -214,7 +214,7 @@ public final class mineralcontest extends JavaPlugin {
         if (!communityVersion) {
             Groupe defaut = new Groupe();
             defaut.setEtat(Etats.EN_ATTENTE);
-            defaut.setNom("MineralContest");
+            defaut.setNom("AmelieOreCupGroup");
             groupes.add(defaut);
 
             if (pluginWorld == null) pluginWorld = PlayerUtils.getPluginWorld();
