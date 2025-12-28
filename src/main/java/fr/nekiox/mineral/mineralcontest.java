@@ -364,9 +364,12 @@ public final class mineralcontest extends JavaPlugin {
 
                 afficherMessageVersion();
 
-                if ((boolean) getPluginConfigValue("enable_auto_update")) {
-                    Version.Check(true);
-                }
+                // L'auto-update est désactivée pour éviter les téléchargements automatiques non désirés.
+                // Si tu veux la réactiver, change enable_auto_update dans config/plugin_config.yml à true
+                // et décommente l'appel ci-dessous.
+                // if ((boolean) getPluginConfigValue("enable_auto_update")) {
+                //     Version.Check(true);
+                // }
 
             });
 

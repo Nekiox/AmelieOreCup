@@ -1015,12 +1015,15 @@ public class Game implements Listener {
             this.groupe.enableVote();
             this.groupe.resetGame();
 
+            // Ensure players are fully cleared after game end/reset
+            for (Player joueur : groupe.getPlayers()) {
+                PlayerUtils.clearPlayer(joueur, true);
+            }
+
             //this.achievementManager.unloadAchievementManager();
 
 
-
         }, 20 * delaiAvantFinPartie);
-
 
 
 
@@ -1220,7 +1223,13 @@ public class Game implements Listener {
                 online.getInventory().clear();
             }
 
+        }
 
+        // Clear players fully before starting the game (inventory, effects, armor, etc.)
+        for (Player online : groupe.getPlayers()) {
+            if (!isReferee(online)) {
+                PlayerUtils.clearPlayer(online, true);
+            }
         }
 
 

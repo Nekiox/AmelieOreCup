@@ -4,7 +4,7 @@ main: fr.nekiox.mineral.mineralcontest
 api-version: 1.13
 prefix: AmelieOreCup
 load: STARTUP
-authors: Nekiox
+authors: ["Nekiox"]
 description: Plugin gamemode Amelie Ore Cup
 commands:
   start:
