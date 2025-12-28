@@ -45,6 +45,9 @@ import org.bukkit.util.Vector;
 
 import java.util.*;
 
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
+
 /*
     Classe représentant une partie MineralContest
  */
@@ -727,6 +730,49 @@ public class Game implements Listener {
                 if(!isReferee(player) && mcPlayer.getEquipe() != null) teamColor = mcPlayer.getEquipe().getCouleur();
                 String position = teamColor + "X: " + resetColor + player.getLocation().getBlockX() + " " + teamColor + "Y:" + resetColor + player.getLocation().getBlockY() + teamColor + " Z:" + resetColor + player.getLocation().getBlockZ();
                 ScoreboardAPI.updateField(player, ScoreboardFields.SCOREBOARD_PLAYERLOCATION_VALUE, position);
+
+                // Envoi de l'actionbar avec une flèche pointant vers la base du joueur et la distance
+                try {
+                    if (!isReferee(player) && mcPlayer != null && mcPlayer.getEquipe() != null) {
+                        Equipe team = mcPlayer.getEquipe();
+                        if (team.getMaison() != null && team.getMaison().getHouseLocation() != null) {
+                            Location base = team.getMaison().getHouseLocation();
+                            Location ploc = player.getLocation();
+
+                            double dx = base.getX() - ploc.getX();
+                            double dz = base.getZ() - ploc.getZ();
+                            double distance = Math.hypot(dx, dz);
+
+                            // Angle vers la cible en degrés (math convention: 0 = +X, increasing to +Y)
+                            double angleToTarget = Math.toDegrees(Math.atan2(dz, dx));
+
+                            // Convertir l'orientation du joueur en angle math-compatible
+                            double playerYaw = ploc.getYaw();
+                            double playerAngle = (-playerYaw + 90.0) % 360.0;
+                            if (playerAngle < -180) playerAngle += 360.0;
+                            if (playerAngle > 180) playerAngle -= 360.0;
+
+                            double relative = angleToTarget - playerAngle;
+                            while (relative <= -180) relative += 360;
+                            while (relative > 180) relative -= 360;
+
+                            String arrow;
+                            if (relative >= -22.5 && relative < 22.5) arrow = "↑";
+                            else if (relative >= 22.5 && relative < 67.5) arrow = "↗";
+                            else if (relative >= 67.5 && relative < 112.5) arrow = "→";
+                            else if (relative >= 112.5 && relative < 157.5) arrow = "↘";
+                            else if (relative >= 157.5 || relative < -157.5) arrow = "↓";
+                            else if (relative >= -157.5 && relative < -112.5) arrow = "↙";
+                            else if (relative >= -112.5 && relative < -67.5) arrow = "←";
+                            else arrow = "↖";
+
+                            String actionText = team.getCouleur() + arrow + " " + Math.round(distance) + "m";
+                            player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(actionText));
+                        }
+                    }
+                } catch (Exception ignored) {
+                }
+
             }
         },0, mineralcontest.player_location_hud_refresh_rate);
 
