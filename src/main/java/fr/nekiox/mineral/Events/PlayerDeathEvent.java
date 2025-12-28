@@ -68,7 +68,7 @@ public class PlayerDeathEvent implements Listener {
 
 
                 // Liste des items à drop
-                LinkedList<Material> item_a_drop = new LinkedList<Material>();
+                LinkedList<Material> item_a_drop = new LinkedList<>();
                 item_a_drop.add(Material.IRON_INGOT);
                 item_a_drop.add(Material.GOLD_INGOT);
                 item_a_drop.add(Material.DIAMOND);
@@ -91,8 +91,15 @@ public class PlayerDeathEvent implements Listener {
                 switch(partie.groupe.getParametresPartie().getCVAR("mp_enable_item_drop").getValeurNumerique()) {
                     // Dans le cas où c'est 0, on drop rien
                     case 0: event.getDrops().clear(); break;
-                    // Dans le cas où c'est 1, on drop uniquement les minerais
-                    case 1: event.getDrops().removeIf(item -> !item_a_drop.contains(item.getType())); break;
+                    // Dans le cas où c'est 1, on drop uniquement les minerais ou les items enchantés
+                    case 1:
+                        event.getDrops().removeIf(item -> {
+                            boolean isAllowedType = item_a_drop.contains(item.getType());
+                            org.bukkit.inventory.meta.ItemMeta meta = item.getItemMeta();
+                            boolean isEnchanted = meta != null && meta.hasEnchants();
+                            return !isAllowedType && !isEnchanted;
+                        });
+                        break;
                 }
 
 
