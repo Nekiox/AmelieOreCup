@@ -51,6 +51,25 @@ public class EntityDamage implements Listener {
 
                 EntityDamageByEntityEvent entityDamageByEntityEvent = (EntityDamageByEntityEvent) event;
 
+                // Si la période no-PvP est active, on annule les dégâts causés par un joueur (ou une flèche tirée par un joueur)
+                try {
+                    Groupe grp = mineralcontest.getPlayerGroupe(joueur);
+                    if (grp != null && grp.getGame() != null && grp.getGame().isNoPvpActive()) {
+                        if (entityDamageByEntityEvent.getDamager() instanceof Player) {
+                            entityDamageByEntityEvent.setCancelled(true);
+                            return;
+                        }
+                        if (entityDamageByEntityEvent.getDamager() instanceof Arrow) {
+                            Arrow a = (Arrow) entityDamageByEntityEvent.getDamager();
+                            if (a.getShooter() instanceof Player) {
+                                entityDamageByEntityEvent.setCancelled(true);
+                                return;
+                            }
+                        }
+                    }
+                } catch (Exception ignored) {}
+
+
                 // On vérifie les dégats fait par un joueur
                 if (entityDamageByEntityEvent.getDamager() instanceof Player) {
                     Player attaquant = (Player) entityDamageByEntityEvent.getDamager();

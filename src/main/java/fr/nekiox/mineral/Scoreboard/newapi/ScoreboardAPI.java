@@ -9,10 +9,16 @@ import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.*;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 
 public class ScoreboardAPI {
 
     private static ArrayList<Player> playersWithScoreboard;
+
+    // Joueurs ayant activé le mode streamer (coordonnées cachées)
+    private static Set<UUID> streamerHiddenPlayers = new HashSet<>();
 
     public static String prefix = "» ";
 
@@ -161,6 +167,28 @@ public class ScoreboardAPI {
         return false;
     }
 
+    public static boolean isStreamerMode(Player player) {
+        if (player == null) return false;
+        return streamerHiddenPlayers.contains(player.getUniqueId());
+    }
 
+    public static boolean toggleStreamerMode(Player player) {
+        if (player == null) return false;
+        UUID id = player.getUniqueId();
+        if (streamerHiddenPlayers.contains(id)) {
+            streamerHiddenPlayers.remove(id);
+            return false;
+        } else {
+            streamerHiddenPlayers.add(id);
+            return true;
+        }
+    }
+
+    public static void setStreamerMode(Player player, boolean enabled) {
+        if (player == null) return;
+        UUID id = player.getUniqueId();
+        if (enabled) streamerHiddenPlayers.add(id);
+        else streamerHiddenPlayers.remove(id);
+    }
 
 }

@@ -340,7 +340,9 @@ public class PlayerHUDEvents implements Listener {
 
         // ON affiche la position du joueur
         String position_joueur = teamColor + "X: " + resetColor + joueur.getLocation().getBlockX() + " " + teamColor + "Y: " + resetColor + joueur.getLocation().getBlockY() + teamColor + " Z: " + resetColor + joueur.getLocation().getBlockZ();
-        ScoreboardAPI.registerNewObjective(joueur, ScoreboardFields.SCOREBOARD_PLAYERLOCATION_VALUE, position_joueur, position--);
+        // Respecter le mode streamer : si activé, on cache les coordonnées
+        String locValue = ScoreboardAPI.isStreamerMode(joueur) ? "" : position_joueur;
+        ScoreboardAPI.registerNewObjective(joueur, ScoreboardFields.SCOREBOARD_PLAYERLOCATION_VALUE, locValue, position--);
 
     }
 

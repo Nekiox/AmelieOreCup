@@ -92,6 +92,22 @@ public class Game implements Listener {
     @Getter @Setter
     private int databaseGameId;
 
+    // Temps (en secondes) pendant lequel le PvP est désactivé au début de la partie
+    private int noPvPTimeLeft = 0;
+
+    /**
+     * Retourne true si la période no-PvP est active
+     */
+    public boolean isNoPvpActive() {
+        return this.noPvPTimeLeft > 0;
+    }
+
+    /**
+     * Retourne le temps restant (en secondes) de la période no-PvP
+     */
+    public int getNoPvpTimeLeft() {
+        return this.noPvPTimeLeft;
+    }
 
     /**
      * JoinTeam module
@@ -399,7 +415,7 @@ public class Game implements Listener {
             // Si tous les joueurs sont prêt
             if (areAllPlayersReady()) {
 
-                // Si on est en mode communautaire et que le nombre de membre est inférieur au nombre de jouuers requis
+                // Si on est en mode communautaire et que le nombre de membre est inférieur au nombre de joueurs requis
                 // On ne fait rien et on averti le groupe
                 if(mineralcontest.communityVersion) {
                     if(groupe.getPlayers().size() < mineralcontest.min_player_per_group) {
@@ -748,9 +764,12 @@ public class Game implements Listener {
 
                             // Convertir l'orientation du joueur en angle math-compatible
                             double playerYaw = ploc.getYaw();
-                            double playerAngle = (-playerYaw + 90.0) % 360.0;
-                            if (playerAngle < -180) playerAngle += 360.0;
-                            if (playerAngle > 180) playerAngle -= 360.0;
+                            // Convertir le yaw de Bukkit en angle mathématique où 0 = +X et positif vers +Z
+                            // Utiliser playerAngle = playerYaw + 90 pour que lorsque la cible est devant (forward)
+                            // on obtienne la même angle que angleToTarget
+                            double playerAngle = (playerYaw + 90.0) % 360.0;
+                             if (playerAngle < -180) playerAngle += 360.0;
+                             if (playerAngle > 180) playerAngle -= 360.0;
 
                             double relative = angleToTarget - playerAngle;
                             while (relative <= -180) relative += 360;
@@ -850,6 +869,14 @@ public class Game implements Listener {
         PreGame = false;
         GameStarted = true;
 
+        // Activer le timer no-PvP de 60 secondes au démarrage effectif de la partie (seulement si c'est un vrai début)
+        if (shouldClearPlayer) {
+            this.noPvPTimeLeft = 60; // 60 secondes de non-PvP
+            for (MCPlayer joueur : mineralcontest.plugin.getMCPlayers()) {
+                joueur.getJoueur().sendMessage(mineralcontest.prefixPrive + "PvP désactivé pour les 60 premières secondes de la partie.");
+            }
+        }
+
 
         // On effectue les actions suivante uniquement si c'est un début de partie
         // On ne doit pas le faire en cas de resume
@@ -882,6 +909,15 @@ public class Game implements Listener {
 
         MCGameTickEvent event = new MCGameTickEvent(this);
         event.callEvent();
+
+        // Gérer la décrémentation du timer no-PvP si actif
+        if (this.noPvPTimeLeft > 0) {
+            this.noPvPTimeLeft--;
+            if (this.noPvPTimeLeft == 0) {
+                groupe.sendToEveryone(mineralcontest.prefixGlobal + "Le PvP est maintenant activé !");
+            }
+        }
+
 
         try {
 
@@ -1223,7 +1259,7 @@ public class Game implements Listener {
             return false;
         }
         if (mineralcontest.debug)
-            mineralcontest.plugin.getServer().getLogger().info(mineralcontest.plugin.prefixGlobal + "[Verification] Spawn coffre arene: " + ChatColor.GREEN + "OK");
+            mineralcontest.plugin.getServer().getLogger().info(mineralcontest.prefixGlobal + "[Verification] Spawn coffre arene: " + ChatColor.GREEN + "OK");
 
 
         // SPAWN ARENE

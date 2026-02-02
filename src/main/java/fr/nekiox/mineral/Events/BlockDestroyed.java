@@ -138,14 +138,14 @@ public class BlockDestroyed implements Listener {
 
             // Mise à jour MC des blocs de fer
             // On applique pas cette logique si le joueur est mineur
-            if(blockDetruit.getType() == Material.IRON_ORE) {
-                MCPlayer mcPlayer = mineralcontest.plugin.getMCPlayer(joueur);
-                if(!(mcPlayer.getKit() instanceof Mineur)) {
-                    event.setDropItems(false);
-                    blockDetruit.getWorld().dropItemNaturally(blockDetruit.getLocation(), new ItemStack(Material.IRON_ORE));
-
-                }
-            }
+            //if(blockDetruit.getType() == Material.IRON_ORE) {
+            //    MCPlayer mcPlayer = mineralcontest.plugin.getMCPlayer(joueur);
+            //    if(!(mcPlayer.getKit() instanceof Mineur)) {
+            //        event.setDropItems(false);
+            //        blockDetruit.getWorld().dropItemNaturally(blockDetruit.getLocation(), new ItemStack(Material.IRON_ORE));
+            //
+            //    }
+            //}
 
             // Sinon, le block détruit n'est pas dans la zone protégé, on autorise la destruction
             playerGroupe.getGame().addBlock(event.getBlock(), BlockSaver.Type.DESTROYED);
